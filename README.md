@@ -65,11 +65,13 @@ CBZ, CBR, CB7, CBT, ZIP, RAR, 7z, LHA, Tar, PDF, and folders of images.
 
 ```
 brew tap wiredframe/tap
-brew install --cask wiredframe/tap/simple-comic
+brew install --cask simple-comic-paper
 ```
 
-This replaces the `simple-comic` cask from Homebrew's own repository — same app name, same place in
-`/Applications`, this fork's build.
+The cask is called `simple-comic-paper` only so this line stays short: Homebrew's own repository
+already has a `simple-comic`, and two of them would mean typing the fully qualified name every
+time. The app is still Simple Comic and still installs to `/Applications`, so it replaces the
+build from Homebrew's cask rather than sitting beside it.
 
 Or download the `.zip` from [Releases](https://github.com/Wiredframe/Simple-Comic/releases) and move
 `Simple Comic.app` into `/Applications`.

@@ -4,13 +4,15 @@
 # Homebrew cask for this fork of Simple Comic.
 #
 # Belongs in a tap repository — GitHub repo `Wiredframe/homebrew-tap`, path
-# `Casks/simple-comic.rb` — and is kept here so it ships with the source it describes. After a
+# `Casks/simple-comic-paper.rb` — and is kept here so it ships with the source it describes. After a
 # release, update `version` and `sha256` from the output of scripts/release.sh and push the tap.
 #
-# The token deliberately matches Homebrew's own `simple-comic` cask: this is the same app, and
-# it installs to the same place. Users disambiguate with the full name,
-# `brew install --cask --no-quarantine wiredframe/tap/simple-comic`, and `conflicts_with` stops
-# the two from being installed on top of each other by accident.
+# The token is `simple-comic-paper` rather than `simple-comic` purely so the install line stays
+# short. Homebrew's own repository already has a `simple-comic` cask, and two taps offering the
+# same token force everyone to type the fully qualified `wiredframe/tap/simple-comic` forever.
+# With a unique token, `brew install --cask simple-comic-paper` is enough. The app itself is
+# still called Simple Comic and still installs to the same place, so `conflicts_with` keeps the
+# two from landing on top of each other.
 #
 # The build is not notarised (see scripts/release.sh for why), so macOS quarantines the
 # download and would refuse to open it on the first try. Homebrew's DSL has no stanza to opt out
@@ -22,9 +24,9 @@
 # workflow writes, not from a local build, since two builds of the same source do not produce
 # byte-identical zips.
 
-cask "simple-comic" do
+cask "simple-comic-paper" do
   version "2.0.1"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "f1c2feaa2e488ee6eaedaf8f2e55afc896c69bb6eca2bf41b4b88fff788aacac"
 
   url "https://github.com/Wiredframe/Simple-Comic/releases/download/v#{version}/Simple-Comic-#{version}.zip",
       verified: "github.com/Wiredframe/"

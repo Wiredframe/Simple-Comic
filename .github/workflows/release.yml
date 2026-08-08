@@ -64,7 +64,7 @@ jobs:
 
           \`\`\`
           brew tap wiredframe/tap
-          brew install --cask wiredframe/tap/simple-comic
+          brew install --cask simple-comic-paper
           \`\`\`
 
           Or download the zip below and move \`Simple Comic.app\` into \`/Applications\`.
