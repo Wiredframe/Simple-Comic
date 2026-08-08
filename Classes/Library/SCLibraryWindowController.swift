@@ -38,16 +38,6 @@ final class SCLibraryWindowController: NSWindowController, NSWindowDelegate,
 		window.isReleasedWhenClosed = false
 		self.init(window: window)
 
-		// `setFrameAutosaveName` only ever *saves*; restoring is `setFrameUsingName`. The old
-		// code centred the window first and never read anything back, so every launch stored a
-		// freshly centred frame and the remembered size was lost. Restore first, centre only
-		// when there is nothing to restore, and let the controller keep it current after that.
-		shouldCascadeWindows = false
-		if !window.setFrameUsingName(Self.frameAutosaveName) {
-			window.center()
-		}
-		windowFrameAutosaveName = Self.frameAutosaveName
-
 		window.delegate = self
 		window.contentViewController = splitController
 		window.toolbarStyle = .unified
@@ -61,6 +51,16 @@ final class SCLibraryWindowController: NSWindowController, NSWindowDelegate,
 
 		foldersMenu.delegate = self
 		sortMenu.delegate = self
+
+		// Restoring the frame has to come LAST. Two things would undo it otherwise: assigning
+		// `contentViewController` resizes the window to that controller's fitting size, and
+		// `setFrameAutosaveName` only ever saves — the read back is `setFrameUsingName`, which
+		// the first attempt at this never called at all.
+		shouldCascadeWindows = false
+		if !window.setFrameUsingName(Self.frameAutosaveName) {
+			window.center()
+		}
+		windowFrameAutosaveName = Self.frameAutosaveName
 	}
 
 	override func showWindow(_ sender: Any?) {

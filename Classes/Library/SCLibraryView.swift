@@ -590,27 +590,35 @@ struct SCCoverImage: View {
 				Color.clear
 			}
 		}
-		.onAppear(perform: load)
+		.onAppear { load(url) }
 		// The grid gives every cell its own identity, so a new cover means a new view and
-		// onAppear fires. The details pane reuses one view and only swaps the url — without
-		// this, it kept showing whatever was selected first.
-		.onChange(of: cacheKey) { _ in
-			image = nil
-			load()
-		}
+		// onAppear fires. The details pane reuses one view and only swaps the url, so the
+		// reload has to be driven from here — with the URL the closure is handed, never the
+		// one on `self`, which is a copy of the view as it was before the change.
+		.onChange(of: url) { newURL in load(newURL) }
 		.onDisappear { image = nil }
 	}
 
-	private func load() {
-		guard image == nil, let url = url else { return }
-		if let cached = SCImageCache.image(forKey: cacheKey) {
+	/// Loads `target`, which is passed in rather than read from `self` on purpose.
+	///
+	/// The previous version cleared `image` and then called a loader that began with
+	/// `guard image == nil`. That read does not see the write that precedes it, so the guard
+	/// bailed out every time and the pane only caught up on the *next* selection: it was
+	/// permanently one comic behind.
+	private func load(_ target: URL?) {
+		guard let target = target else {
+			image = nil
+			return
+		}
+		let key = "\(target.path)#\(Int(maxPixel))"
+		if let cached = SCImageCache.image(forKey: key) {
 			image = cached
 			return
 		}
-		let key = cacheKey
+		image = nil
 		let pixel = maxPixel
 		DispatchQueue.global(qos: .userInitiated).async {
-			guard let decoded = SCImageDownsampler.downsample(url: url, maxPixel: pixel) else { return }
+			guard let decoded = SCImageDownsampler.downsample(url: target, maxPixel: pixel) else { return }
 			let nsImage = SCImageDownsampler.nsImage(decoded)
 			SCImageCache.set(nsImage, forKey: key)
 			DispatchQueue.main.async {
@@ -674,6 +682,7 @@ struct SCLibraryDetailPane: View {
 		HStack {
 			Spacer(minLength: 0)
 			SCCoverImage(url: entry.coverURL, maxPixel: 500)
+				.id(entry.id)
 				.frame(width: 170,
 					   height: 170 / CGFloat(entry.coverAspect ?? Double(SCLibraryMetrics.defaultAspect)))
 				.clipShape(RoundedRectangle(cornerRadius: SCLibraryMetrics.coverRadius, style: .continuous))
