@@ -65,8 +65,12 @@ CBZ, CBR, CB7, CBT, ZIP, RAR, 7z, LHA, Tar, PDF, and folders of images.
 
 ```
 brew tap wiredframe/tap
+brew trust --cask wiredframe/tap/simple-comic-paper
 brew install --cask simple-comic-paper
 ```
+
+Homebrew refuses casks from taps outside its own repositories until you say you trust them —
+`brew trust` is that "yes", and it is asked once per tap, for any third-party cask.
 
 The cask is called `simple-comic-paper` only so this line stays short: Homebrew's own repository
 already has a `simple-comic`, and two of them would mean typing the fully qualified name every

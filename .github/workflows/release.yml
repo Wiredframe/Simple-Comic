@@ -64,6 +64,7 @@ jobs:
 
           \`\`\`
           brew tap wiredframe/tap
+          brew trust --cask wiredframe/tap/simple-comic-paper
           brew install --cask simple-comic-paper
           \`\`\`
 
