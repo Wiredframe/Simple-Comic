@@ -23,7 +23,7 @@
 # byte-identical zips.
 
 cask "simple-comic" do
-  version "2.0.0"
+  version "2.0.1"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
   url "https://github.com/Wiredframe/Simple-Comic/releases/download/v#{version}/Simple-Comic-#{version}.zip",
