@@ -25,8 +25,16 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+      # /Applications/Xcode.app on the runner images is not necessarily the newest one, and an
+      # older toolchain fails on things as basic as @MainActor. Pick the highest version that is
+      # actually installed, and say which one, so a future failure is diagnosable from the log.
+      - name: Select the newest Xcode
+        run: |
+          ls -d /Applications/Xcode*.app
+          XCODE=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+          swift --version
 
       # The paper effect is a Metal CIKernel, so the Metal toolchain has to be present. It is
       # part of some runner images already; downloading it is a no-op when it is.
