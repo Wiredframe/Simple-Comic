@@ -14,11 +14,11 @@
 # still called Simple Comic and still installs to the same place, so `conflicts_with` keeps the
 # two from landing on top of each other.
 #
-# The build is not notarised (see scripts/release.sh for why), so macOS quarantines the
-# download and would refuse to open it on the first try. Homebrew's DSL has no stanza to opt out
-# of that, but a `postflight` block runs after the app is in place, and clearing the attribute
-# there spares every user from knowing about `--no-quarantine`. The caveats say plainly that
-# this happened.
+# The build is not notarised (see scripts/release.sh for why), so macOS quarantines the download
+# and would refuse to open it on the first try. Homebrew's DSL has no stanza to opt out of that,
+# and Homebrew 6 removed the user-side `--no-quarantine` flag as well, which leaves a `postflight`
+# block as the only way to spare people a Gatekeeper block. The caveats say plainly that it
+# happened.
 #
 # `sha256` must match the asset that was actually published: take it from the release notes the
 # workflow writes, not from a local build, since two builds of the same source do not produce
@@ -40,9 +40,8 @@ cask "simple-comic-paper" do
   app "Simple Comic.app"
 
   postflight do
-    # Same effect as installing with --no-quarantine, minus the need to know about the flag.
-    # `must_succeed: false` because the attribute is legitimately absent when someone did pass
-    # the flag, and xattr treats that as an error.
+    # `must_succeed: false` because the attribute is legitimately absent sometimes — a local
+    # build, a re-run — and xattr treats a missing attribute as an error.
     system_command "/usr/bin/xattr",
                    args:         ["-dr", "com.apple.quarantine", "#{appdir}/Simple Comic.app"],
                    must_succeed: false

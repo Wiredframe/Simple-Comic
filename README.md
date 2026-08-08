@@ -85,10 +85,12 @@ Or download the `.zip` from [Releases](https://github.com/Wiredframe/Simple-Comi
 Builds here are signed the way any local Xcode build is, but they are not notarised by Apple.
 Notarising requires a paid Apple Developer membership, and tying every release of an open-source
 app to a subscription is not a trade this project wants to make. macOS therefore quarantines the
-download and would refuse to open it the first time.
+download and would refuse to open it the first time. Homebrew 6 removed the `--no-quarantine`
+flag that used to sidestep this, so the cask clears the attribute itself after installing and
+`brew install` just works.
 
-The cask clears that flag after installing, so `brew install` just works. **After a manual
-download** it is still there, so open the app once via right-click → **Open**, or run:
+**After a manual download** the flag is still there, so open the app once via right-click →
+**Open**, or run:
 
 ```
 xattr -dr com.apple.quarantine "/Applications/Simple Comic.app"
