@@ -25,8 +25,8 @@
 # byte-identical zips.
 
 cask "simple-comic-paper" do
-  version "2.0.2"
-  sha256 "ff2d96f1037c88581659af5638247f1201af0ce8354d45af3899e0fbccef9065"
+  version "2.0.3"
+  sha256 "f24eb6a5f1d5f12a95f4e1bef04a8981ff729808d9b03826d5323661a4f1e622"
 
   url "https://github.com/Wiredframe/Simple-Comic/releases/download/v#{version}/Simple-Comic-#{version}.zip",
       verified: "github.com/Wiredframe/"
