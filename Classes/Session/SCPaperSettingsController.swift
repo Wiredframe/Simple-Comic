@@ -83,7 +83,10 @@ final class SCPaperSettingsController: NSObject {
 		preview.widthAnchor.constraint(equalToConstant: 200).isActive = true
 		preview.heightAnchor.constraint(equalToConstant: 290).isActive = true
 		previewView = preview
-		let previewRow = grid.addRow(with: [preview])
+		// The first row added decides how many columns the grid has. Adding the preview alone
+		// made that one, and merging three cells then went out of range and threw — which is why
+		// the panel never opened. Three cells here, merged into one afterwards.
+		let previewRow = grid.addRow(with: [preview, NSGridCell.emptyContentView, NSGridCell.emptyContentView])
 		previewRow.mergeCells(in: NSRange(location: 0, length: 3))
 		previewRow.cell(at: 0).xPlacement = .center
 

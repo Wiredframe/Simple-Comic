@@ -22,6 +22,8 @@ import SwiftUI
 final class SCLibraryWindowController: NSWindowController, NSWindowDelegate,
 									   NSToolbarDelegate, NSMenuDelegate, NSSearchFieldDelegate {
 
+	private static let frameAutosaveName = NSWindow.FrameAutosaveName("SCLibraryWindow")
+
 	private let splitController = SCLibrarySplitViewController()
 	private let foldersMenu = NSMenu(title: "")
 	private let sortMenu = NSMenu(title: "")
@@ -33,11 +35,18 @@ final class SCLibraryWindowController: NSWindowController, NSWindowDelegate,
 							  backing: .buffered,
 							  defer: false)
 		window.title = NSLocalizedString("Library", comment: "library window title")
-		window.center()
-		// Position and size across launches, for free.
-		window.setFrameAutosaveName("SCLibraryWindow")
 		window.isReleasedWhenClosed = false
 		self.init(window: window)
+
+		// `setFrameAutosaveName` only ever *saves*; restoring is `setFrameUsingName`. The old
+		// code centred the window first and never read anything back, so every launch stored a
+		// freshly centred frame and the remembered size was lost. Restore first, centre only
+		// when there is nothing to restore, and let the controller keep it current after that.
+		shouldCascadeWindows = false
+		if !window.setFrameUsingName(Self.frameAutosaveName) {
+			window.center()
+		}
+		windowFrameAutosaveName = Self.frameAutosaveName
 
 		window.delegate = self
 		window.contentViewController = splitController

@@ -591,6 +591,13 @@ struct SCCoverImage: View {
 			}
 		}
 		.onAppear(perform: load)
+		// The grid gives every cell its own identity, so a new cover means a new view and
+		// onAppear fires. The details pane reuses one view and only swaps the url — without
+		// this, it kept showing whatever was selected first.
+		.onChange(of: cacheKey) { _ in
+			image = nil
+			load()
+		}
 		.onDisappear { image = nil }
 	}
 
