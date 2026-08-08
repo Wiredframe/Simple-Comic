@@ -100,18 +100,18 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Simple Comic"
+            "value" : "Paper Comic Reader"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic"
           }
         },
@@ -370,30 +370,30 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Copyright © 2010 Dancing Tortoise Software."
+            "value" : "Paper Comic Reader © 2026 Ulf Schuster. Based on Simple Comic, © 2007–2010 Dancing Tortoise Software, MIT licensed."
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Copyright © 2010 Dancing Tortoise Software."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Copyright © 2010 Dancing Tortoise Software."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "著作権 © 2010 Dancing Tortoise Software."
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "저작권 © 2010 Dancing Tortoise Software."
           }
         }

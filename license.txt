@@ -1,3 +1,11 @@
+Simple Comic
+This is a fork of Simple Comic by Dancing Tortoise Software, maintained by
+Ulf Schuster. Additions in this fork are copyright (c) 2026 Ulf Schuster and are
+released under the same terms. The original copyright notice and MIT permission
+notice follow, and apply to this software as a whole.
+
+----------------------------------------------------------------------
+
 Copyright (c) 2007 Dancing Tortoise Software
 
 Permission is hereby granted, free of charge, to any person 

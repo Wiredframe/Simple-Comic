@@ -514,100 +514,6 @@ typedef struct {
 
 
 
-/* This method is used to generate the composite loupe image. */
-- (NSImage *)imageInRect:(NSRect)rect
-{
-	if(![firstPageImage isValid])
-	{
-		return nil;
-	}
-	
-	NSRect imageRect = imageBounds;
-	NSPoint cursorPoint = NSZeroPoint;
-	/* Re-orients the rectangle based on the current page rotation */
-	switch (rotation)
-	{
-		case 0:
-			cursorPoint = NSMakePoint(NSMinX(rect) - NSMinX(imageBounds), NSMinY(rect) - NSMinY(imageBounds));
-			break;
-		case 1:
-			cursorPoint = NSMakePoint(NSMaxY(imageBounds) - NSMinY(rect), NSMinX(rect) - NSMinX(imageBounds));
-			imageRect.size.width = NSHeight(imageBounds);
-			imageRect.size.height = NSWidth(imageBounds);
-			break;
-		case 2:
-			cursorPoint = NSMakePoint(NSMaxX(imageBounds) - NSMinX(rect), NSMaxY(imageBounds) - NSMinY(rect));
-			break;
-		case 3:
-			cursorPoint = NSMakePoint(NSMinY(rect) - NSMinY(imageBounds), NSMaxX(imageBounds) - NSMinX(rect));
-			imageRect.size.width = NSHeight(imageBounds);
-			imageRect.size.height = NSWidth(imageBounds);
-			break;
-		default:
-			break;
-	}
-	
-	CGFloat power = [[NSUserDefaults standardUserDefaults] doubleForKey: TSSTLoupePower];
-	CGFloat scale;
-	CGFloat remainder;
-	NSRect firstFragment = NSZeroRect;
-	NSRect secondFragment = NSZeroRect;
-	NSSize zoomSize;
-	
-	if(sessionController.session.pageOrder || ![secondPageImage isValid])
-	{
-		scale = NSHeight(imageRect) / [firstPageImage size].height;
-		zoomSize = NSMakeSize(NSWidth(rect) / (power * scale), NSHeight(rect) / (power * scale));
-		firstFragment = NSMakeRect(cursorPoint.x / scale - zoomSize.width / 2,
-								   cursorPoint.y / scale - zoomSize.height / 2,
-								   zoomSize.width, zoomSize.height);
-		remainder = NSMaxX(firstFragment) - [firstPageImage size].width;
-		
-		if([secondPageImage isValid] && remainder > 0)
-		{
-			cursorPoint.x -= [firstPageImage size].width * scale;
-			scale = NSHeight(imageRect) / [secondPageImage size].height;
-			zoomSize = NSMakeSize(NSWidth(rect) / (power * scale), NSHeight(rect) / (power * scale));
-			secondFragment = NSMakeRect(cursorPoint.x / scale - zoomSize.width / 2,
-										cursorPoint.y / scale - zoomSize.height / 2,
-										zoomSize.width, zoomSize.height);
-		}
-	}
-	else
-	{
-		scale = NSHeight(imageRect) / [secondPageImage size].height;
-		zoomSize = NSMakeSize(NSWidth(rect) / (power * scale), NSHeight(rect) / (power * scale));
-		secondFragment = NSMakeRect(cursorPoint.x / scale - zoomSize.width / 2,
-									cursorPoint.y / scale - zoomSize.height / 2,
-									zoomSize.width, zoomSize.height);
-		remainder = NSMaxX(secondFragment) - [secondPageImage size].width;
-		if(remainder > 0)
-		{
-			cursorPoint.x -= [secondPageImage size].width * scale;
-			scale = NSHeight(imageRect) / [firstPageImage size].height;
-			zoomSize = NSMakeSize(NSWidth(rect) / (power * scale), NSHeight(rect) / (power * scale));
-			firstFragment = NSMakeRect(cursorPoint.x / scale - zoomSize.width / 2,
-									   cursorPoint.y / scale - zoomSize.height / 2,
-									   zoomSize.width, zoomSize.height);
-		}
-	}
-	
-	NSImage * imageFragment = [[NSImage alloc] initWithSize: rect.size];
-	[imageFragment lockFocus];
-	[self rotationTransformWithFrame: NSMakeRect(0, 0, NSWidth(rect), NSHeight(rect))];
-	
-	if(!NSEqualRects(firstFragment, NSZeroRect))
-	{
-		[firstPageImage drawInRect: NSMakeRect(0,0,NSWidth(rect), NSHeight(rect)) fromRect: firstFragment operation: NSCompositingOperationSourceOver fraction: 1.0];
-	}
-	
-	if(!NSEqualRects(secondFragment, NSZeroRect))
-	{
-		[secondPageImage drawInRect: NSMakeRect(0,0,NSWidth(rect), NSHeight(rect)) fromRect: secondFragment operation: NSCompositingOperationSourceOver fraction: 1.0];
-	}
-	[imageFragment unlockFocus];
-	return imageFragment;
-}
 
 
 #pragma mark -
@@ -926,23 +832,7 @@ typedef struct {
 	int scaling = [[[sessionController session] valueForKey: TSSTPageScaleOptions] intValue];
 	scaling = [sessionController currentPageIsText] ? 2 : scaling;
 	
-	if((modifier & NSEventModifierFlagCommand) && [theEvent deltaY])
-	{
-		NSInteger loupeDiameter = [defaultsController integerForKey: TSSTLoupeDiameter];
-		loupeDiameter += [theEvent deltaY] > 0 ? -25 : 25;
-		loupeDiameter = MAX(loupeDiameter, 200);
-		loupeDiameter = MIN(loupeDiameter, 500);
-		[defaultsController setInteger: loupeDiameter forKey: TSSTLoupeDiameter];
-	}
-	else if((modifier & NSEventModifierFlagOption) && [theEvent deltaY])
-	{
-		CGFloat loupePower = [defaultsController doubleForKey: TSSTLoupePower];
-		loupePower += [theEvent deltaY] > 0 ? -0.5 : 0.5;
-		loupePower = MAX(loupePower, 1.5);
-		loupePower = MIN(loupePower, 6);
-		[defaultsController setDouble: loupePower forKey: TSSTLoupePower];
-	}
-	else if(scaling == 1)
+	if(scaling == 1)
 	{
 		CGFloat deltaX = [theEvent deltaX];
 		if (deltaX != 0.0)
@@ -999,7 +889,6 @@ typedef struct {
 		}
 	}
 	
-	[sessionController refreshLoupePanel];
 }
 
 
@@ -1102,7 +991,6 @@ typedef struct {
 	if(scrolling && !scrollTimer)
 	{
 		[self scrollPoint: scrollPoint];
-		[sessionController refreshLoupePanel];
 		NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 										  [NSDate date], @"lastTime", @(shiftKey), @"accelerate",
 										  nil, @"leftTurnStart", nil, @"rightTurnStart", nil];
@@ -1347,17 +1235,14 @@ typedef struct {
 		[scrollView reflectScrolledClipView: clipView];
 	}
 	
-	[sessionController refreshLoupePanel];
 }
 
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-	if(![sessionController.tracker didRightMouseDown:theEvent])
-	{
-		BOOL loupe = !sessionController.session.loupe;
-		sessionController.session.loupe = loupe;
-	}
+	/* Only the Live Text selection uses the right button; the magnifying loupe that used to
+	   live here was removed. */
+	[sessionController.tracker didRightMouseDown:theEvent];
 }
 
 
@@ -1438,7 +1323,6 @@ typedef struct {
 			{
 				currentPoint = [theEvent locationInWindow];
 				[self scrollPoint: NSMakePoint(viewOrigin.x + cursor.x - currentPoint.x,viewOrigin.y + cursor.y - currentPoint.y)];
-				[sessionController refreshLoupePanel];
 			}
 			theEvent = [[self window] nextEventMatchingMask: NSEventMaskLeftMouseUp | NSEventMaskLeftMouseDragged];
 		}

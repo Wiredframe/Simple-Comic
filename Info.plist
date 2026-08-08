@@ -457,7 +457,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2010 Dancing Tortoise Software.</string>
+	<string>Simple Comic © 2007–2010 Dancing Tortoise Software, MIT licensed. This fork maintained by Ulf Schuster.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

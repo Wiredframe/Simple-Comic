@@ -60,6 +60,8 @@ extern NSString *const TSSTPreserveModDate;
 extern NSString *const TSSTUnifiedTitlebar;
 extern NSString *const TSSTFullscreenToolbar;
 extern NSString *const SCPaperEffectEnabled;
+extern NSString *const SCLibraryOpenAtLaunch;
+extern NSString *const SCLibraryReopenLastComic;
 
 extern NSString *const TSSTScrollPosition;
 extern NSString *const TSSTZoomLevel;
@@ -146,6 +148,9 @@ extern NSNotificationName const TSSTSessionEndNotification;
 
 /*! Launches the preferences window manager. */
 - (IBAction)openPreferences:(nullable id)sender;
+
+/*! Shows the library window, creating it on first use. */
+- (IBAction)showLibrary:(nullable id)sender;
 
 /*! Starts an NSOpenPanel with auxiliary view */
 - (IBAction)addPages:(nullable id)sender;

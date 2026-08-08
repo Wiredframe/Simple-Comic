@@ -54,6 +54,8 @@ NSString *const TSSTPreserveModDate =   @"preserveModDate";
 NSString *const TSSTUnifiedTitlebar =   @"unifiedTitlebar";
 NSString *const TSSTFullscreenToolbar =   @"fullscreenToolbar";
 NSString *const SCPaperEffectEnabled =    @"SCPaperEffectEnabled";
+NSString *const SCLibraryOpenAtLaunch =  @"SCLibraryOpenAtLaunch";
+NSString *const SCLibraryReopenLastComic = @"SCLibraryReopenLastComic";
 
 NSString *const TSSTScrollPosition =    @"scrollPosition";
 NSString *const TSSTZoomLevel =         @"zoomLevel";
@@ -160,7 +162,10 @@ static NSArray<NSNumber*> * allAvailableStringEncodings(void)
 	
 	/**  Window controller for preferences. */
 	DTPreferencesController      * preferences;
-	
+
+	/**  Window controller for the library. Created the first time it is shown. */
+	SCLibraryWindowController    * library;
+
 	/**  This is the array that maintains all of the session window managers. */
 	NSMutableArray<TSSTSessionWindowController*> * sessions;
 	
@@ -212,6 +217,8 @@ static NSArray<NSNumber*> * allAvailableStringEncodings(void)
 		  TSSTUnifiedTitlebar: @NO,
 		  TSSTFullscreenToolbar: @NO,
 		  SCPaperEffectEnabled: @NO,
+		  SCLibraryOpenAtLaunch: @YES,
+		  SCLibraryReopenLastComic: @YES,
 		  @"SCPaperShowThrough": @0.38,
 		  @"SCPaperGrain": @0.14,
 		  @"SCPaperWarmth": @1.0,
@@ -334,6 +341,21 @@ static NSArray<NSNumber*> * allAvailableStringEncodings(void)
 		launchFiles = nil;
 	}
 
+	[self installLibraryMenuItem];
+
+	if([userDefaults boolForKey: SCLibraryOpenAtLaunch])
+	{
+		[self showLibrary: nil];
+	}
+
+	/* Reopens the comic that was read last, but only when nothing else already put a page on
+	   screen: a restored session and a file opened at launch both count, and either of them
+	   is a more specific intent than "carry on where I was". */
+	if([userDefaults boolForKey: SCLibraryReopenLastComic] && sessions.count == 0)
+	{
+		[SCLibraryBridge openLastReadComic];
+	}
+
 	// If we are on a mac to old for Optical Character Recognition, hide the OCR menu items.
 	[OCRTracker hideOCRMenusIfUnavailable];
 
@@ -345,7 +367,11 @@ static NSArray<NSNumber*> * allAvailableStringEncodings(void)
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
 	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-	
+
+	/* Windows still open have never been through -endSession:, so their reading positions
+	   are recorded here before anything closes. Also writes the library index out. */
+	[SCLibraryBridge applicationWillTerminate];
+
 	if(![userDefaults boolForKey: TSSTSessionRestore])
 	{
 		/* Goes through and deletes all active sessions if the user has auto save turned off */
@@ -586,6 +612,9 @@ static NSArray<NSNumber*> * allAvailableStringEncodings(void)
 {
 	TSSTSessionWindowController * controller = [notification object];
 	TSSTManagedSession * sessionToRemove = [controller session];
+	/* The session is about to be deleted, so the library has to take the reading position
+	   off it now. Called here rather than from the notification so the ordering is certain. */
+	[SCLibraryBridge sessionWillEnd: sessionToRemove];
 	[sessions removeObject: controller];
 	[[self managedObjectContext] deleteObject: sessionToRemove];
 }
@@ -745,6 +774,69 @@ static NSArray<NSNumber*> * allAvailableStringEncodings(void)
 		preferences = [DTPreferencesController new];
 	}
 	[preferences showWindow: self];
+}
+
+
+/*  Adds the Library item to the File menu in code rather than in MainMenu.xib: the nib is
+    edited by hand in this project, and one menu item is not worth the risk of touching it. */
+- (void)installLibraryMenuItem
+{
+	NSMenu * fileMenu = nil;
+	NSInteger insertIndex = 0;
+	for(NSMenuItem * topLevelItem in [NSApp mainMenu].itemArray)
+	{
+		NSMenu * submenu = topLevelItem.submenu;
+		/* Matched on the action alone: Open… is wired to File's Owner in the nib, so a
+		   search that also demands a nil target finds nothing. */
+		NSInteger openIndex = -1;
+		for(NSInteger index = 0; index < submenu.numberOfItems; index += 1)
+		{
+			if([submenu itemAtIndex: index].action == @selector(addPages:))
+			{
+				openIndex = index;
+				break;
+			}
+		}
+		if(submenu && openIndex != -1)
+		{
+			fileMenu = submenu;
+			insertIndex = openIndex + 1;
+			/* Open Recent sits directly below Open…; the library belongs after it. */
+			if(insertIndex < submenu.numberOfItems && [submenu itemAtIndex: insertIndex].hasSubmenu)
+			{
+				insertIndex += 1;
+			}
+			break;
+		}
+	}
+
+	if(!fileMenu)
+	{
+		fileMenu = [NSApp windowsMenu];
+		insertIndex = 0;
+		if(!fileMenu)
+		{
+			return;
+		}
+	}
+
+	NSMenuItem * item = [[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Library", @"Library menu item")
+												   action: @selector(showLibrary:)
+											keyEquivalent: @"l"];
+	item.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagShift;
+	item.target = self;
+	[fileMenu insertItem: item atIndex: insertIndex];
+}
+
+
+- (IBAction)showLibrary:(id)sender
+{
+	if(!library)
+	{
+		library = [SCLibraryWindowController new];
+	}
+	[library showWindow: self];
+	[[library window] makeKeyAndOrderFront: self];
 }
 
 

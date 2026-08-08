@@ -266,102 +266,102 @@
       }
     },
     "56.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Simple Comic\"; ObjectID = \"56\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Paper Comic Reader\"; ObjectID = \"56\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Simple Comic"
+            "value" : "Paper Comic Reader"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic"
           }
         }
       }
     },
     "57.title" : {
-      "comment" : "Class = \"NSMenu\"; title = \"Simple Comic\"; ObjectID = \"57\";",
+      "comment" : "Class = \"NSMenu\"; title = \"Paper Comic Reader\"; ObjectID = \"57\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Simple Comic"
+            "value" : "Paper Comic Reader"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic"
           }
         }
       }
     },
     "58.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"About Simple Comic\"; ObjectID = \"58\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"About Paper Comic Reader\"; ObjectID = \"58\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Über Simple Comic"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "About Simple Comic"
+            "value" : "About Paper Comic Reader"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "About Simple Comic"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "À propos de Simple Comic"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Informazioni su Simple Comic"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic について"
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic 에 대하여"
           }
         },
         "pt" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Sobre o Simple Comic"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "关于 Simple Comic"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "關於 Simple Comic"
           }
         }
@@ -566,132 +566,132 @@
       }
     },
     "134.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Hide Simple Comic\"; ObjectID = \"134\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Hide Paper Comic Reader\"; ObjectID = \"134\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic ausblenden"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Hide Simple Comic"
+            "value" : "Hide Paper Comic Reader"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Hide Simple Comic"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Masquer Simple Comic"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Nascondi Simple Comic"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic を隠す"
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic 을 가리기"
           }
         },
         "pt" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Ocultar Simple Comic"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "隐藏 Simple Comic"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "隱藏 Simple Comic"
           }
         }
       }
     },
     "136.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Quit Simple Comic\"; ObjectID = \"136\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Quit Paper Comic Reader\"; ObjectID = \"136\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic beenden"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Quit Simple Comic"
+            "value" : "Quit Paper Comic Reader"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Quit Simple Comic"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Quitter Simple Comic"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Esci da Simple Comic"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic を終了"
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic 를 종료"
           }
         },
         "pt" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Encerrar simple Comic"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "退出 Simple Comic"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "結束 Simple Comic"
           }
         }
@@ -3140,66 +3140,66 @@
       }
     },
     "1208.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Simple Comic Help\"; ObjectID = \"1208\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Paper Comic Reader Help\"; ObjectID = \"1208\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic-Hilfe"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Simple Comic Help"
+            "value" : "Paper Comic Reader Help"
           }
         },
         "en-GB" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic Help"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Aide Simple Comic"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Aiuto di Simple Comic"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comicヘルプ"
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic 도움말"
           }
         },
         "pt" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Ajuda do Simple Comic"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic 帮助"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Simple Comic 輔助說明"
           }
         }
@@ -3273,7 +3273,7 @@
     },
     "1216.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Image Loupe\"; ObjectID = \"1216\";",
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

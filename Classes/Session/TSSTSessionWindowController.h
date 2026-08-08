@@ -50,7 +50,6 @@ typedef NS_ENUM(NSInteger, PageSelectionMode)  {
 	- As the session window controller it handles the transition from
 		windowed to fullscreen mode.
 	- Mouse moved events are handled here. Which results in the following:
-	-	- Handles the movement and positioning of the page loupe.
 	-	- Handles the layout of the info window
 			when the user scrubs the progress bar.
 */
@@ -76,7 +75,9 @@ typedef NS_ENUM(NSInteger, PageSelectionMode)  {
 @property (weak) IBOutlet TSSTInfoWindow     * infoWindow;
 @property (weak) IBOutlet NSImageView        * infoPicture;
 
-/* Localized image zoom loupe elements */
+/* Outlets for the removed magnifying loupe. The panel and its image view still exist in
+   TSSTSessionWindow.xib, so the connections have to resolve for the nib to load, but nothing
+   ever shows them. */
 @property (weak) IBOutlet TSSTInfoWindow * loupeWindow;
 @property (weak) IBOutlet NSImageView    * zoomView;
 
@@ -112,7 +113,6 @@ typedef NS_ENUM(NSInteger, PageSelectionMode)  {
 - (IBAction)rotateLeft:(nullable id)sender;
 - (IBAction)noRotation:(nullable id)sender;
 
-- (IBAction)toggleLoupe:(nullable id)sender;
 
 #pragma mark Selection Actions
 - (IBAction)turnPage:(nullable id)sender;
@@ -156,7 +156,6 @@ typedef NS_ENUM(NSInteger, PageSelectionMode)  {
 - (void)prepareToEnd;
 
 
-- (void)refreshLoupePanel;
 - (void)infoPanelSetupAtPoint:(NSPoint)point;
 
 - (void)handleMouseDragged:(NSNotification*)notification;
@@ -199,8 +198,7 @@ typedef NS_ENUM(NSInteger, PageSelectionMode)  {
 - (void)toolbarWillAddItem:(NSNotification *)notification;
 
 
-/*!	Methods that kill page expose, the loupe, and fullscreen.
-	In that order. */
+/*!	Methods that kill page expose and fullscreen, in that order. */
 - (void)killAllOptionalUIElements;
 - (void)killTopOptionalUIElement;
 

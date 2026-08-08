@@ -9,6 +9,7 @@
 #import "OCRSelectionLayer.h"
 #import "OCRFind.h"
 #import "OCRVision.h"
+#import "Simple_Comic-Swift.h"
 #import <Vision/Vision.h>
 
 NSString *const OCRDisableKey = @"OCRDisableKey";
@@ -82,6 +83,10 @@ static NSRange UnionRanges(NSRange early, NSRange late)
 
 
 static NSSpeechSynthesizer *sSpeechSynthesizer;
+
+/// Where the last right-click happened, in the tracked view's coordinates. The system
+/// translation popover needs somewhere to point at, and the click is the right place.
+static NSPoint sLastContextMenuPoint;
 
 /// Bundle up all the data associated with one our client's images.
 @interface OCRDatum : NSObject
@@ -880,10 +885,17 @@ static NSSpeechSynthesizer *sSpeechSynthesizer;
 
 /// Show the contextual menu for text at the theEvent's point
 - (void)popUpTextContextMenu:(NSEvent *)theEvent {
+	sLastContextMenuPoint = [self.view convertPoint:[theEvent locationInWindow] fromView:nil];
 	NSInteger i = 0;
 	NSMenu *theMenu = [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Contextual Menu", @"")];
 	[theMenu insertItemWithTitle:NSLocalizedString(@"Copy", @"") action:@selector(copy:) keyEquivalent:@"" atIndex:i++];
 	[theMenu insertItemWithTitle:NSLocalizedString(@"Look Up", @"") action:@selector(lookUp:) keyEquivalent:@"" atIndex:i++];
+	/* Left out entirely rather than shown disabled on systems without the Translation
+	   framework: a permanently greyed item is just a question the user can't answer. */
+	if (SCTranslate.isAvailable)
+	{
+		[theMenu insertItemWithTitle:NSLocalizedString(@"Translate", @"") action:@selector(translate:) keyEquivalent:@"" atIndex:i++];
+	}
 	[theMenu insertItem:[NSMenuItem separatorItem] atIndex:i++];
 	[theMenu insertItemWithTitle:NSLocalizedString(@"Start Speaking", @"") action:@selector(startSpeaking:) keyEquivalent:@"" atIndex:i++];
 	[theMenu insertItemWithTitle:NSLocalizedString(@"Stop Speaking", @"") action:@selector(stopSpeaking:) keyEquivalent:@"" atIndex:i++];
@@ -1012,6 +1024,10 @@ static NSSpeechSynthesizer *sSpeechSynthesizer;
 				NSLocalizedString(@"Look Up", @"");
 		return 0 != lookUpString.length;
 	}
+	else if ([menuItem action] == @selector(translate:))
+	{
+		return self.isAnySelected;
+	}
 	else if ([menuItem action] == @selector(selectAll:))
 	{
 		NSInteger totalTextPiecesCount = self.totalTextPiecesCount;
@@ -1119,6 +1135,17 @@ static NSSpeechSynthesizer *sSpeechSynthesizer;
 {
   NSAttributedString *s =  [[NSAttributedString alloc] initWithString:[self lookUpString]];
   [self.view showDefinitionForAttributedString:s atPoint:[self lookUpPoint]];
+}
+
+/// Hands the selected text to the system translator.
+- (void)translate:(id)sender
+{
+	NSString *text = [self selectionJoinedBy:@" "];
+	NSView *view = self.view;
+	if (0 != text.length && view != nil)
+	{
+		[SCTranslate translateText:text inView:view atPoint:sLastContextMenuPoint];
+	}
 }
 
 - (void)copy:(id)sender

@@ -149,14 +149,11 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	[defaults addObserver: self forKeyPath: TSSTStatusbarVisible options: 0 context: nil];
 	[defaults addObserver: self forKeyPath: TSSTScrollersVisible options: 0 context: nil];
 	[defaults addObserver: self forKeyPath: TSSTBackgroundColor options: 0 context: nil];
-	[defaults addObserver: self forKeyPath: TSSTLoupeDiameter options: 0 context: nil];
-	[defaults addObserver: self forKeyPath: TSSTLoupePower options: 0 context: nil];
 	[defaults addObserver: self forKeyPath: SCPaperEffectEnabled options: 0 context: nil];
 	pageView.paperEffect = [defaults boolForKey: SCPaperEffectEnabled];
 	[session addObserver: self forKeyPath: TSSTPageOrder options: 0 context: nil];
 	[session addObserver: self forKeyPath: TSSTPageScaleOptions options: 0 context: nil];
 	[session addObserver: self forKeyPath: TSSTTwoPageSpread options: 0 context: nil];
-	[session addObserver: self forKeyPath: @"loupe" options: 0 context: nil];
 	
 	[session bind: @"selection" toObject: pageController withKeyPath: @"selectionIndex" options: nil];
 	
@@ -197,8 +194,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	[defaults removeObserver: self forKeyPath: TSSTScrollersVisible];
 	[defaults removeObserver: self forKeyPath: TSSTBackgroundColor];
 	[defaults removeObserver: self forKeyPath: TSSTConstrainScale];
-	[defaults removeObserver: self forKeyPath: TSSTLoupeDiameter];
-	[defaults removeObserver: self forKeyPath: TSSTLoupePower];
 	[defaults removeObserver: self forKeyPath: SCPaperEffectEnabled];
 	[pageController removeObserver: self forKeyPath: @"selectionIndex"];
 	[pageController removeObserver: self forKeyPath: @"arrangedObjects.@count"];
@@ -271,19 +266,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	{
 		[self adjustStatusBar];
 	}
-	else if([keyPath isEqualToString: TSSTLoupeDiameter])
-	{
-		NSInteger loupeDiameter = [defaults integerForKey: TSSTLoupeDiameter];
-		[loupeWindow resizeToDiameter: loupeDiameter];
-	}
-	else if([keyPath isEqualToString: @"loupe"])
-	{
-		[self refreshLoupePanel];
-	}
-	else if([keyPath isEqualToString: TSSTLoupePower])
-	{
-		[self refreshLoupePanel];
-	}
 	else if([keyPath isEqualToString: SCPaperEffectEnabled])
 	{
 		pageView.paperEffect = [defaults boolForKey: SCPaperEffectEnabled];
@@ -329,7 +311,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 		[self infoPanelSetupAtPoint: windowLocation];
 	}
 	
-	[self refreshLoupePanel];
 	
 	[self handleFullscreenCursorHiding];
 }
@@ -363,41 +344,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 }
 
 
-- (void)refreshLoupePanel
-{
-	BOOL loupe = session.loupe;
-	NSPoint mouse = [NSEvent mouseLocation];
-	
-	NSRect point = NSMakeRect(mouse.x, mouse.y, 0, 0);
-	NSPoint localPoint = [pageView convertPoint: [[self window] convertRectFromScreen: point].origin fromView: nil];
-	NSPoint scrollPoint = [pageScrollView convertPoint: [[self window] convertRectFromScreen: point].origin fromView: nil];
-	if(NSMouseInRect(scrollPoint, [pageScrollView bounds], [pageScrollView isFlipped])
-	   && loupe
-	   && [[self window] isKeyWindow]
-	   && pageSelectionInProgress == PageSelectionModeNone)
-	{
-		if(![loupeWindow isVisible])
-		{
-			[[self window] addChildWindow: loupeWindow ordered: NSWindowAbove];
-			[NSCursor hide];
-		}
-		
-		NSRect zoomRect = [zoomView frame];
-		[loupeWindow centerAtPoint: mouse];
-		zoomRect.origin = localPoint;
-		[zoomView setImage: [pageView imageInRect: zoomRect]];
-	}
-	else
-	{
-		if([loupeWindow isVisible])
-		{
-			[[loupeWindow parentWindow] removeChildWindow: loupeWindow];
-			[loupeWindow orderOut: self];
-		}
-		
-		[NSCursor unhide];
-	}
-}
 
 
 - (void)infoPanelSetupAtPoint:(NSPoint)point
@@ -629,7 +575,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	session.scaleOptions = 0;
 	
 	[pageView resizeView];
-	[self refreshLoupePanel];
 }
 
 - (IBAction)zoomOut:(id)sender
@@ -647,7 +592,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	session.scaleOptions = 0;
 	
 	[pageView resizeView];
-	[self refreshLoupePanel];
 }
 
 - (IBAction)zoomReset:(id)sender
@@ -655,7 +599,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	session.scaleOptions = 0;
 	session.zoomLevel = 1.0;
 	[pageView resizeView];
-	[self refreshLoupePanel];
 }
 
 
@@ -678,7 +621,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	currentRotation = currentRotation + 1 > 3 ? 0 : currentRotation + 1;
 	session.rotation = currentRotation;
 	[self resizeWindow];
-	[self refreshLoupePanel];
 }
 
 - (IBAction)rotateLeft:(id)sender
@@ -687,23 +629,15 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	currentRotation = currentRotation - 1 < 0 ? 3 : currentRotation - 1;
 	session.rotation = currentRotation;
 	[self resizeWindow];
-	[self refreshLoupePanel];
 }
 
 - (IBAction)noRotation:(id)sender
 {
 	session.rotation = 0;
 	[self resizeWindow];
-	[self refreshLoupePanel];
 }
 
 
-- (IBAction)toggleLoupe:(id)sender
-{
-	BOOL loupe = session.loupe;
-	loupe = !loupe;
-	session.loupe = loupe;
-}
 
 
 - (IBAction)togglePaperEffect:(id)sender
@@ -799,7 +733,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	savedZoom = session.zoomLevel;
 	[pageScrollView setHasVerticalScroller: NO];
 	[pageScrollView setHasHorizontalScroller: NO];
-	[self refreshLoupePanel];
 	NSSize imageSize = [pageView combinedImageSizeForZoom: 1];
 	NSSize scrollerBounds = [[pageView enclosingScrollView] bounds].size;
 	scrollerBounds.height -= 20;
@@ -1104,8 +1037,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	[self scaleToWindow];
 	[self adjustStatusBar];
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	NSInteger loupeDiameter = [defaults integerForKey: TSSTLoupeDiameter];
-	[loupeWindow setFrame:NSMakeRect(0,0, loupeDiameter, loupeDiameter) display: NO];
 	NSColor * color = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSColor class] fromData:[defaults valueForKey: TSSTBackgroundColor] error:NULL];
 	[pageScrollView setBackgroundColor: color];
 	[pageView setRotation: session.rotation];
@@ -1210,7 +1141,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	
 	[self scaleToWindow];
 	[pageView correctViewPoint];
-	[self refreshLoupePanel];
 }
 
 
@@ -1283,7 +1213,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	}
 	
     [pageView resizeView];
-    [self refreshLoupePanel];
 }
 
 
@@ -1415,10 +1344,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
     {
         [[self window] toggleFullScreen: self];
     }
-	else if(session.loupe)
-	{
-        session.loupe = NO;
-	}
 }
 
 
@@ -1428,8 +1353,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
     {
         [[self window] toggleFullScreen: self];
     }
-    session.loupe = NO;
-    [self refreshLoupePanel];
 	[exposeBezel removeChildWindow: thumbnailPanel];
 	[thumbnailPanel orderOut: self];
 	[exposeBezel orderOut: self];
@@ -1650,7 +1573,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
     [session removeObserver: self forKeyPath: TSSTPageOrder];
     [session removeObserver: self forKeyPath: TSSTPageScaleOptions];
     [session removeObserver: self forKeyPath: TSSTTwoPageSpread];
-	[session removeObserver: self forKeyPath: @"loupe"];
     [session unbind: TSSTViewRotation];
     [session unbind: @"selection"];
 }
@@ -1670,11 +1592,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
     if([aNotification object] == [self window])
     {
         [NSApp setPresentationOptions: NSApplicationPresentationDefault];
-		if(session.loupe)
-		{
-			[NSCursor hide];
-		}
-		[self refreshLoupePanel];
 		[self handleFullscreenCursorHiding];
     }
 }
@@ -1690,7 +1607,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 	if([aNotification object] == [self window])
 	{
 		[NSCursor unhide];
-		[self refreshLoupePanel];
 		[[infoWindow parentWindow] removeChildWindow: infoWindow];
 		[infoWindow orderOut: self];
 	}
@@ -1851,7 +1767,6 @@ NSString * const TSSTMouseDragNotification = @"SCMouseDragNotification";
 - (void)windowDidEnterFullScreen:(NSNotification *)notification
 {
 //    [self resizeWindow];
-	[self refreshLoupePanel];
 	[self hideCursor];
 }
 

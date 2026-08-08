@@ -18,7 +18,6 @@ private extension NSToolbarItem.Identifier {
 	static let rotation    = NSToolbarItem.Identifier("2FEB6E2E-5C3E-4725-B4B7-D5204BC8F2A8")
 	static let zoom        = NSToolbarItem.Identifier("C8491130-5672-4D81-9D91-76BB3F03D233")
 	static let imageZoom   = NSToolbarItem.Identifier("A580F497-94D7-4752-971B-01FBBAD86DEF")
-	static let loupe       = NSToolbarItem.Identifier("55B2F7CD-2E3A-405A-BF65-65B5A68E94BD")
 	static let capturePage = NSToolbarItem.Identifier("7D6CA1DF-7F26-421E-874E-21596C513A14")
 	static let setIcon     = NSToolbarItem.Identifier("7ACC3052-A491-4940-83A9-B40928F5C001")
 }
@@ -81,7 +80,6 @@ extension TSSTSessionWindowController: NSToolbarDelegate, NSToolbarItemValidatio
 			.rotation,
 			.zoom,
 			.imageZoom,
-			.loupe,
 			.capturePage,
 			.setIcon,
 			.space,
@@ -178,18 +176,6 @@ extension TSSTSessionWindowController: NSToolbarDelegate, NSToolbarItemValidatio
 
 			if flag {
 				item.bind(.selectedIndex, to: self, withKeyPath: "session.scaleOptions")
-			}
-
-			return item
-			
-		case .loupe:
-			let item = DTToolbarItem(itemIdentifier: .loupe)
-			item.image = NSImage(systemSymbolName: "loupe", accessibilityDescription: nil)
-			item.label = NSLocalizedString("575.label", tableName: "TSSTSessionWindowToolbar", value: "Loupe", comment: "Loupe label")
-			item.paletteLabel = NSLocalizedString("575.paletteLabel", tableName: "TSSTSessionWindowToolbar", value: "Loupe", comment: "Loupe palette label")
-			item.toolTip = NSLocalizedString("573.ibShadowedToolTip", tableName: "TSSTSessionWindowToolbar", value: "Magnifying Glass", comment: "Magnifying Glass tool tip")
-			if flag {
-				item.bind(.value, to: self, withKeyPath: "session.loupe")
 			}
 
 			return item
