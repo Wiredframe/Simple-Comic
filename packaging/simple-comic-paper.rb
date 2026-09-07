@@ -3,8 +3,8 @@
 
 # Homebrew cask for this fork of Simple Comic.
 #
-# Belongs in a tap repository — GitHub repo `Wiredframe/homebrew-tap`, path
-# `Casks/simple-comic-paper.rb` — and is kept here so it ships with the source it describes. After a
+# Belongs in a tap repository (GitHub repo `Wiredframe/homebrew-tap`, path
+# `Casks/simple-comic-paper.rb`) and is kept here so it ships with the source it describes. After a
 # release, update `version` and `sha256` from the output of scripts/release.sh and push the tap.
 #
 # The token is `simple-comic-paper` rather than `simple-comic` purely so the install line stays
@@ -16,9 +16,9 @@
 #
 # The build is not notarised (see scripts/release.sh for why), so macOS quarantines the download
 # and would refuse to open it on the first try. Homebrew's DSL has no stanza to opt out of that,
-# and Homebrew 6 removed the user-side `--no-quarantine` flag as well, which leaves a `postflight`
-# block as the only way to spare people a Gatekeeper block. The caveats say plainly that it
-# happened.
+# and Homebrew 6 removed the user-side `--no-quarantine` flag as well, which leaves a
+# `postflight_steps` block as the only way to spare people a Gatekeeper block. The caveats say
+# plainly that it happened.
 #
 # `sha256` must match the asset that was actually published: take it from the release notes the
 # workflow writes, not from a local build, since two builds of the same source do not produce
@@ -28,8 +28,7 @@ cask "simple-comic-paper" do
   version "2.0.3"
   sha256 "f24eb6a5f1d5f12a95f4e1bef04a8981ff729808d9b03826d5323661a4f1e622"
 
-  url "https://github.com/Wiredframe/Simple-Comic/releases/download/v#{version}/Simple-Comic-#{version}.zip",
-      verified: "github.com/Wiredframe/"
+  url "https://github.com/Wiredframe/Simple-Comic/releases/download/v#{version}/Simple-Comic-#{version}.zip"
   name "Simple Comic"
   desc "Comic viewer with a paper effect and a library"
   homepage "https://github.com/Wiredframe/Simple-Comic"
@@ -39,12 +38,12 @@ cask "simple-comic-paper" do
 
   app "Simple Comic.app"
 
-  postflight do
-    # `must_succeed: false` because the attribute is legitimately absent sometimes — a local
-    # build, a re-run — and xattr treats a missing attribute as an error.
-    system_command "/usr/bin/xattr",
-                   args:         ["-dr", "com.apple.quarantine", "#{appdir}/Simple Comic.app"],
-                   must_succeed: false
+  postflight_steps do
+    # `must_succeed: false` because the attribute is legitimately absent sometimes (a local
+    # build, a re-run) and xattr treats a missing attribute as an error.
+    run "/usr/bin/xattr",
+        args:         ["-dr", "com.apple.quarantine", "{{appdir}}/Simple Comic.app"],
+        must_succeed: false
   end
 
   zap trash: [
